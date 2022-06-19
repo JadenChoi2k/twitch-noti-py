@@ -1,17 +1,16 @@
 class Model:
     # singleton
     _instance = None
+    # instance field
+    broadcaster_list = []
+    stream_list = []
+    notify_cbk = None
+    refresh_cbk = None
 
     def __new__(cls, *args, **kwargs):
         if not isinstance(cls._instance, cls):
             cls._instance = object.__new__(cls, *args, **kwargs)
         return cls._instance
-
-    def __init__(self):
-        self.broadcaster_list = []
-        self.stream_list = []
-        self.notify_cbk = None
-        self.refresh_cbk = None
 
     def register_notify(self, cbk):
         self.notify_cbk = cbk

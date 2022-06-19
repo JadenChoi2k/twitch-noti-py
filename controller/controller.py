@@ -6,16 +6,15 @@ model = Model()
 class Controller:
     # singleton
     _instance = None
+    # instance field
+    apicaller = ApiCaller()
 
     def __new__(cls, *args, **kwargs):
         if not isinstance(cls._instance, cls):
             cls._instance = object.__new__(cls, *args, **kwargs)
         return cls._instance
 
-    def __init__(self):
-        self.apicaller = ApiCaller()
-
-    def on_refresh(self):
+    def refresh(self):
         broadcaster_list, stream_list = [], []
         is_end = False
         while not is_end:
@@ -27,4 +26,3 @@ class Controller:
             stream_list += stream
         model.refresh(broadcaster_list, stream_list)
         model.on_refresh()
-
