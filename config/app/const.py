@@ -20,7 +20,7 @@ VALUE_PARSER = {
                      'auto-open': lambda x: x == 'ON'}
 }
 APP_DEFAULT_SETTINGS = {
-    'system': {'resolution': 0,
+    'system': {'resolution': 2,
                'language': 0,
                'refresh-interval': 2,
                'run-on-boot': 1},

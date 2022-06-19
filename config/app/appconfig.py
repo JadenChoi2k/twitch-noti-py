@@ -59,7 +59,7 @@ class AppConfiguration:
                     raise TypeError('option value must be index of list')
                 if idx >= len(APP_CONFIG_CONSTANTS[sec][opt]):
                     raise IndexError('option index out of range')
-                self._cp[sec][opt] = idx
+                self._cp[sec][opt] = str(idx)
 
     def get(self, section, option):
         idx = self._cp.getint(section, option)
