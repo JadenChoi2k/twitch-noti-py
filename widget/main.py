@@ -4,7 +4,7 @@ from PyQt6 import uic
 from config.app.appconfig import AppConfiguration
 
 config = AppConfiguration()
-title_ui = uic.loadUiType('title.ui')[0]
+title_ui = uic.loadUiType('main.ui')[0]
 
 
 class MainWindow(QMainWindow, title_ui):
