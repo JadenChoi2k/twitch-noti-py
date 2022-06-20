@@ -11,18 +11,43 @@ class Controller:
 
     def __new__(cls, *args, **kwargs):
         if not isinstance(cls._instance, cls):
-            cls._instance = object.__new__(cls, *args, **kwargs)
+            cls._instance = super().__new__(cls, *args, **kwargs)
         return cls._instance
 
+    # will be called by view layer, setup or refresh button
     def refresh(self):
-        broadcaster_list, stream_list = [], []
-        is_end = False
-        while not is_end:
-            broadcaster, is_end = self.apicaller.get_next_followed_broadcaster()
-            broadcaster_list += broadcaster
-        is_end = False
-        while not is_end:
-            stream, is_end, = self.apicaller.get_next_followed_stream()
-            stream_list += stream
+        broadcaster_list = self._fetch(self.apicaller.get_next_followed_broadcaster)
+        stream_list = self._fetch(self.apicaller.get_next_followed_stream)
         model.refresh(broadcaster_list, stream_list)
         model.on_refresh()
+
+    # monitor live-streaming and invoke model to notify if there exists new
+    def monitor(self):
+        prev_streaming: list = model.stream_list
+        next_streaming = self._fetch(self.apicaller.get_next_followed_stream)
+        old_streaming, new_streaming = self._get_changes(prev_streaming, next_streaming)
+        # on streaming off / on
+        if old_streaming or new_streaming:
+            # if empty, nothing happens
+            model.on_notify(new_streaming.values())
+            model.refresh(model.broadcaster_list, next_streaming)
+            model.on_refresh()
+
+    def _get_changes(self, prev_streaming, next_streaming) -> tuple:
+        prev_id_map = {prev.broadcaster_id: prev for prev in prev_streaming}
+        next_id_map = {nxt.broadcaster_id: nxt for nxt in next_streaming}
+        for pid in map(lambda s: s.broadcaster_id, prev_streaming):
+            if next_id_map.get(pid):
+                next_id_map.pop(pid)
+        for nid in map(lambda s: s.broadcaster_id, next_streaming):
+            if prev_id_map.get(nid):
+                prev_id_map.pop(nid)
+        return prev_id_map, next_id_map
+
+    def _fetch(self, fetch_func):
+        result = []
+        is_end = False
+        while not is_end:
+            part, is_end = fetch_func()
+            result += part
+        return result

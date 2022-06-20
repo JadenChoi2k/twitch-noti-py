@@ -32,8 +32,8 @@ class Model:
         self.broadcaster_list = broadcaster_list
         self.stream_list = stream_list
 
-    def find_broadcaster_by_id(self, id):
+    def find_broadcaster_by_id(self, broadcaster_id):
         for b in self.broadcaster_list:
-            if b.id == id:
+            if b.id == broadcaster_id:
                 return b
         return None
