@@ -27,6 +27,9 @@ class Streaming:
     def get_elapsed(self):
         return (datetime.utcnow().astimezone(timezone_kst) - self.started_at).seconds
 
+    def get_image_url(self, width: int, height: int) -> str:
+        return self.thumbnail_url.replace('{width}', str(width)).replace('{height}', str(height))
+
     def __str__(self) -> str:
-        return f'id: {self.broadcaster_id}, title: {self.title},' \
+        return f'broadcaster_id: {self.broadcaster_id}, title: {self.title},' \
                f' game_name: {self.game_name}, thumbnail_url: {self.thumbnail_url}, started_at: {self.started_at}'
