@@ -7,12 +7,15 @@ class Controller:
     # singleton
     _instance = None
     # instance field
-    apicaller = ApiCaller()
+    apicaller: ApiCaller = None
 
     def __new__(cls, *args, **kwargs):
         if not isinstance(cls._instance, cls):
             cls._instance = super().__new__(cls, *args, **kwargs)
         return cls._instance
+
+    def init(self):
+        self.apicaller = ApiCaller()
 
     # will be called by view layer, setup or refresh button
     def refresh(self):
@@ -26,7 +29,7 @@ class Controller:
         prev_streaming: list = model.stream_list
         next_streaming = self._fetch(self.apicaller.get_next_followed_stream)
         old_streaming, new_streaming = self._get_changes(prev_streaming, next_streaming)
-        # on streaming off / on
+        # if streaming changed
         if old_streaming or new_streaming:
             # if empty, nothing happens
             model.on_notify(new_streaming.values())
