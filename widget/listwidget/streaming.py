@@ -4,6 +4,7 @@ from PyQt6.QtWidgets import *
 from PyQt6 import QtCore
 from PyQt6 import QtGui
 import urllib.request
+import webbrowser
 
 
 class StreamingWidget(QWidget):
@@ -12,7 +13,7 @@ class StreamingWidget(QWidget):
         self.streaming = streaming
         self.broadcaster = broadcaster
         self.setFixedHeight(120)
-        self.thumbnail_image = self.fetch_thumbnail_image_url(streaming.get_image_url(200, 120))
+        self.thumbnail_image = self.fetch_thumbnail_image_url(streaming.get_image_url(400, 240))
         self.title = QLabel(f'[{broadcaster.name}] {streaming.title}')
         self.title.setFont(QtGui.QFont('맑은 고딕', 15))
         self.game_name = QLabel(streaming.game_name)
@@ -22,6 +23,7 @@ class StreamingWidget(QWidget):
 
     def fetch_thumbnail_image_url(self, url) -> QLabel:
         lbl = QLabel()
+        lbl.setScaledContents(True)
         lbl.setFixedSize(200, 120)
         with urllib.request.urlopen(url) as data:
             pixmap = QtGui.QPixmap()
@@ -56,13 +58,20 @@ class StreamingWidget(QWidget):
             print('hover')
         return super(StreamingWidget, self).eventFilter(obj, event)
 
+    def mousePressEvent(self, event: QtGui.QMouseEvent) -> None:
+        webbrowser.open(f'https://twitch.tv/{self.broadcaster.login_id}')
 
-if __name__ == '__main__':
+
+def example():
     from datetime import datetime, timezone, timedelta
     _streaming = Streaming(49045679, '순대국 후로로루로루루로루로루로로록', 'Just Chatting', 'https://static-cdn.jtvnw.net/previews-ttv/live_user_woowakgood-{width}x{height}.jpg', datetime(2022, 5, 21, 8, 56, 56).astimezone(timezone(timedelta(hours=9))))
     _broadcaster = BroadCaster(49045679, 'woowakgood', '우왁굳', 'https://static-cdn.jtvnw.net/jtv_user_pictures/ebc60c08-721b-4572-8f51-8be7136a0c96-profile_image-300x300.png')
+    return StreamingWidget(_streaming, _broadcaster)
+
+
+if __name__ == '__main__':
     import sys
     app = QApplication(sys.argv)
-    stream_widget = StreamingWidget(_streaming, _broadcaster)
+    stream_widget = example()
     stream_widget.show()
     app.exec()

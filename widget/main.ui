@@ -233,7 +233,7 @@
                  <property name="minimumSize">
                   <size>
                    <width>200</width>
-                   <height>40</height>
+                   <height>50</height>
                   </size>
                  </property>
                  <property name="baseSize">
@@ -252,9 +252,9 @@
                  </property>
                  <property name="styleSheet">
                   <string notr="true">QPushButton{
-	color: white;
+	color: white; 
 	background-color: #6441a5;
-	border-radius: 20px;
+	border-radius: 25px;
 }</string>
                  </property>
                  <property name="text">
@@ -392,13 +392,13 @@
             <widget class="QFrame" name="left_nav">
              <property name="minimumSize">
               <size>
-               <width>100</width>
+               <width>150</width>
                <height>0</height>
               </size>
              </property>
              <property name="maximumSize">
               <size>
-               <width>100</width>
+               <width>150</width>
                <height>16777215</height>
               </size>
              </property>
@@ -457,7 +457,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
-                  <height>40</height>
+                  <height>50</height>
                  </size>
                 </property>
                 <property name="font">
@@ -486,7 +486,7 @@ QPushButton:hover {
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
-                  <height>40</height>
+                  <height>50</height>
                  </size>
                 </property>
                 <property name="baseSize">
@@ -521,7 +521,7 @@ QPushButton:hover {
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
-                  <height>40</height>
+                  <height>50</height>
                  </size>
                 </property>
                 <property name="font">
@@ -593,7 +593,7 @@ QPushButton:hover {
            <item>
             <widget class="QFrame" name="right_view">
              <property name="styleSheet">
-              <string notr="true">background-color:green</string>
+              <string notr="true">background-color:white;</string>
              </property>
              <property name="frameShape">
               <enum>QFrame::StyledPanel</enum>
@@ -630,6 +630,27 @@ QPushButton:hover {
                   <property name="bottomMargin">
                    <number>0</number>
                   </property>
+                  <item row="0" column="0">
+                   <widget class="QScrollArea" name="followed_scroll">
+                    <property name="styleSheet">
+                     <string notr="true">background: transparent;
+border: none;</string>
+                    </property>
+                    <property name="widgetResizable">
+                     <bool>true</bool>
+                    </property>
+                    <widget class="QWidget" name="scrollAreaWidgetContents">
+                     <property name="geometry">
+                      <rect>
+                       <x>0</x>
+                       <y>0</y>
+                       <width>916</width>
+                       <height>570</height>
+                      </rect>
+                     </property>
+                    </widget>
+                   </widget>
+                  </item>
                  </layout>
                 </widget>
                 <widget class="QWidget" name="page_1_streaming">
@@ -646,10 +667,53 @@ QPushButton:hover {
                   <property name="bottomMargin">
                    <number>0</number>
                   </property>
+                  <item row="0" column="0">
+                   <widget class="QScrollArea" name="streaming_scroll">
+                    <property name="styleSheet">
+                     <string notr="true">background: transparent;
+border: none;</string>
+                    </property>
+                    <property name="widgetResizable">
+                     <bool>true</bool>
+                    </property>
+                    <widget class="QWidget" name="scrollAreaWidgetContents_2">
+                     <property name="geometry">
+                      <rect>
+                       <x>0</x>
+                       <y>0</y>
+                       <width>916</width>
+                       <height>570</height>
+                      </rect>
+                     </property>
+                    </widget>
+                   </widget>
+                  </item>
                  </layout>
                 </widget>
                 <widget class="QWidget" name="page_2_option">
-                 <layout class="QFormLayout" name="formLayout"/>
+                 <layout class="QVBoxLayout" name="verticalLayout_3">
+                  <item>
+                   <widget class="QScrollArea" name="option_scroll">
+                    <property name="styleSheet">
+                     <string notr="true">background: transparent;
+border: none;</string>
+                    </property>
+                    <property name="widgetResizable">
+                     <bool>true</bool>
+                    </property>
+                    <widget class="QWidget" name="scrollAreaWidgetContents_3">
+                     <property name="geometry">
+                      <rect>
+                       <x>0</x>
+                       <y>0</y>
+                       <width>854</width>
+                       <height>558</height>
+                      </rect>
+                     </property>
+                    </widget>
+                   </widget>
+                  </item>
+                 </layout>
                 </widget>
                </widget>
               </item>

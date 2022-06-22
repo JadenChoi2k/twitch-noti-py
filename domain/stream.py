@@ -18,9 +18,7 @@ class Streaming:
 
     def set_started_at(self, started_at):
         if isinstance(started_at, str):
-            print(started_at, end=' -> ')
             self.started_at = datetime.strptime(started_at, '%Y-%m-%dT%H:%M:%SZ').astimezone(timezone_kst)
-            print(self.started_at)
         else:
             self.started_at = started_at
 

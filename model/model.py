@@ -37,3 +37,9 @@ class Model:
             if b.id == broadcaster_id:
                 return b
         return None
+
+    def is_broadcaster_streaming(self, broadcaster_id) -> bool:
+        for s in self.stream_list:
+            if s.broadcaster_id == broadcaster_id:
+                return True
+        return False
