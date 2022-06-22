@@ -47,10 +47,13 @@ Content-Type: text/html
     # phase 2: receive data and close browser
     data = client_socket.recv(65535)
     client_socket.send('''HTTP/1.1 200 OK
-Content-Length: 88
+Content-Length: 164
 Content-Type: text/html
 
-<script>function closeWindow(){self.opener=self;window.close();} closeWindow();</script>'''.encode())
+<script>
+const closeWindow = function() {this.opener=this;window.close();}
+closeWindow();
+document.write('Authorization success. Please close the window');</script>'''.encode())
     client_socket.close()
     listening_socket.close()
     return cbk(data.decode())
