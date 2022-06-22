@@ -10,7 +10,7 @@ LANGUAGE_MAP = {
     'run-on-boot': 'run on boot',
     'size': 'size',
     'animation': 'animation',
-    'fade-out-time': 'fade out time',
+    'move-out-time': 'move out time',
     'auto-open': 'auto open on notify',
     # config-value
     'English': 'English',

@@ -8,10 +8,11 @@ from controller.controller import Controller
 from model.model import Model
 from widget.listview.followlist import FollowList
 from widget.listview.streamlist import StreamList
+from widget.config.configpage import ConfigurationPage
 
 controller = Controller()
 model = Model()
-config = AppConfiguration()
+appconfig = AppConfiguration()
 title_ui = None
 if os.path.isfile('main.ui'):
     title_ui = uic.loadUiType('main.ui')[0]
@@ -43,8 +44,9 @@ class MainWindow(QMainWindow, title_ui):
     followed_list: FollowList = None
     followed_scroll: QScrollArea = None  # page 0
     streaming_list: StreamList = None
+    config_page: ConfigurationPage = None
     streaming_scroll: QScrollArea = None  # page 1
-    option_scroll: QScrollArea = None  # page 2
+    config_scroll: QScrollArea = None  # page 2
     # page 3 widgets
     lbl_error: QLabel = None
 
@@ -56,10 +58,11 @@ class MainWindow(QMainWindow, title_ui):
 
     def setup(self):
         # setup window
-        self.resize(*config.get('system', 'resolution'))
+        self.resize(*appconfig.get('system', 'resolution'))
         # init widgets
         self.followed_list = FollowList()
         self.streaming_list = StreamList()
+        self.config_page = ConfigurationPage()
         # setup buttons
         self.btn_start.clicked.connect(self.to_loading_page)
         self.btn_followed.clicked.connect(lambda: self.stk_view.setCurrentIndex(0))
@@ -69,6 +72,7 @@ class MainWindow(QMainWindow, title_ui):
         # setup view widgets to scroll
         self.followed_scroll.setWidget(self.followed_list)
         self.streaming_scroll.setWidget(self.streaming_list)
+        self.config_scroll.setWidget(self.config_page)
         # setup callback functions
         model.register_refresh(self._on_refresh)
         model.register_notify(lambda x: print(x))

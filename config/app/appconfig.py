@@ -67,5 +67,8 @@ class AppConfiguration:
         parser = VALUE_PARSER[section][option]
         return parser(val)
 
+    def option_dict(self, sec):
+        return {opt: self._cp.getint(sec, opt) for opt in self._cp.options(sec)}
+
     def to_dict(self):
-        return {sec: {opt: self._cp.get(sec, opt) for opt in self._cp.options(sec)} for sec in self._cp.sections()}
+        return {sec: self.option_dict(sec) for sec in self._cp.sections()}
