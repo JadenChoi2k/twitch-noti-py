@@ -66,3 +66,6 @@ class AppConfiguration:
         val = APP_CONFIG_CONSTANTS[section][option][idx]
         parser = VALUE_PARSER[section][option]
         return parser(val)
+
+    def to_dict(self):
+        return {sec: {opt: self._cp.get(sec, opt) for opt in self._cp.options(sec)} for sec in self._cp.sections()}

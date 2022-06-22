@@ -27,4 +27,4 @@ LANGUAGE_MAP = {
 
 
 def resolve(key):
-    return LANGUAGE_MAP.get(key)
+    return LANGUAGE_MAP[key] if LANGUAGE_MAP.get(key) else key
