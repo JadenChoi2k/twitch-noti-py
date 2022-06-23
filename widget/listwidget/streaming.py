@@ -28,7 +28,14 @@ class StreamingWidget(QWidget):
         with urllib.request.urlopen(url) as data:
             pixmap = QtGui.QPixmap()
             pixmap.loadFromData(data.read())
-            lbl.setPixmap(pixmap)
+            rounded = QtGui.QPixmap(pixmap.size())
+            rounded.fill(QtGui.QColor("transparent"))
+            with QtGui.QPainter(rounded) as painter:
+                painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing)
+                painter.setBrush(QtGui.QBrush(pixmap))
+                painter.setPen(QtCore.Qt.PenStyle.NoPen)
+                painter.drawRoundedRect(rounded.rect(), 15, 15)
+            lbl.setPixmap(rounded)
         return lbl
 
     def setup_layout(self):
@@ -58,8 +65,13 @@ class StreamingWidget(QWidget):
             print('hover')
         return super(StreamingWidget, self).eventFilter(obj, event)
 
-    def mousePressEvent(self, event: QtGui.QMouseEvent) -> None:
-        webbrowser.open(f'https://twitch.tv/{self.broadcaster.login_id}')
+    def mouseReleaseEvent(self, event: QtGui.QMouseEvent) -> None:
+        if self.rect().contains(event.pos()):
+            webbrowser.open(f'https://twitch.tv/{self.broadcaster.login_id}')
+
+    def on_mouse_enter(self):
+        print('enter')
+        self.setStyleSheet('background-color: black')
 
 
 def example():

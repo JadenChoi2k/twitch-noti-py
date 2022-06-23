@@ -19,10 +19,15 @@ class Controller:
 
     # will be called by view layer, setup or refresh button
     def refresh(self):
+        self.refetch()
+        model.on_refresh()
+
+    # just fetch again
+    def refetch(self):
         broadcaster_list = self._fetch(self.apicaller.get_next_followed_broadcaster)
         stream_list = self._fetch(self.apicaller.get_next_followed_stream)
         model.refresh(broadcaster_list, stream_list)
-        model.on_refresh()
+
 
     # monitor live-streaming and invoke model to notify if there exists new
     def monitor(self):

@@ -38,6 +38,7 @@ class MainWindow(QMainWindow, title_ui):
     btn_followed: QPushButton = None
     btn_streaming: QPushButton = None
     btn_option: QPushButton = None
+    btn_refresh: QPushButton = None
     btn_background: QPushButton = None
     # right view
     stk_view: QStackedWidget = None
@@ -68,6 +69,7 @@ class MainWindow(QMainWindow, title_ui):
         self.btn_followed.clicked.connect(lambda: self.stk_view.setCurrentIndex(0))
         self.btn_streaming.clicked.connect(lambda: self.stk_view.setCurrentIndex(1))
         self.btn_option.clicked.connect(lambda: self.stk_view.setCurrentIndex(2))
+        self.btn_refresh.clicked.connect(self._on_refresh_button_click)
         self.btn_background.clicked.connect(lambda: print('to background'))
         # setup view widgets to scroll
         self.followed_scroll.setWidget(self.followed_list)
@@ -92,19 +94,22 @@ class MainWindow(QMainWindow, title_ui):
         controller.refresh()
         self.to_main_page()
 
+    def _on_refresh_button_click(self):
+        t = RefreshTread(self)
+        t.on_load_end.connect(self._on_refresh)
+        t.start()
+
     def _on_refresh(self):
-        self.followed_list.delete_all()
-        self.streaming_list.delete_all()
         # add broadcaster
         broadcaster_list = []
         for b in model.broadcaster_list:
             broadcaster_list.append((b, model.is_broadcaster_streaming(b.id)))
         broadcaster_list.sort(key=lambda x: x[1], reverse=True)
+        self.followed_list.delete_all()
         for t in broadcaster_list:
             self.followed_list.add_follow_item(*t)
-        for w in self.followed_list.widgets:
-            w.setParent(self.followed_list)
         # add streaming
+        self.streaming_list.delete_all()
         for s in model.stream_list:
             self.streaming_list.add_stream_item(s, model.find_broadcaster_by_id(s.broadcaster_id))
 
@@ -126,6 +131,18 @@ class ControllerLoading(QtCore.QThread):
     def run(self):
         _controller = Controller()
         _controller.init()
+        self.on_load_end.emit()
+
+
+class RefreshTread(QtCore.QThread):
+    on_load_end = QtCore.pyqtSignal()
+
+    def __init__(self, parent=None):
+        super(RefreshTread, self).__init__(parent)
+
+    def run(self):
+        _controller = Controller()
+        _controller.refetch()
         self.on_load_end.emit()
 
 

@@ -52,6 +52,7 @@ class GridView(QWidget):
         layout = self.layout()
         for idx in reversed(range(layout.count())):
             layout.itemAt(idx).widget().setParent(None)
+        self.pointer = 0, 0
 
     def update_status(self):
         pass

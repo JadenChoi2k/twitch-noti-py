@@ -11,8 +11,9 @@ class ProfileWidget(QWidget):
         super().__init__()
         self.broadcaster = broad_caster
         self.stream_on = stream_on
+        self.setToolTip(self.broadcaster.login_id)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.setStyleSheet('background: transparent;')
+        self.setStyleSheet('QLabel {background: transparent;} QToolTip {background: white;}')
         self.setFixedSize(150, 180)
         vbox = QVBoxLayout()
         vbox.setContentsMargins(0, 0, 0, 0)
@@ -50,9 +51,10 @@ class ProfileWidget(QWidget):
             else:
                 print('error from fetching profile image')
 
-    def mousePressEvent(self, event: QtGui.QMouseEvent) -> None:
+    def mouseReleaseEvent(self, event: QtGui.QMouseEvent) -> None:
         if self.stream_on:
-            webbrowser.open(f'https://twitch.tv/{self.broadcaster.login_id}')
+            if self.rect().contains(event.pos()):
+                webbrowser.open(f'https://twitch.tv/{self.broadcaster.login_id}')
 
 
 def example(stream_on=True):

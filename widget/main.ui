@@ -559,6 +559,30 @@ QPushButton:hover {
                </spacer>
               </item>
               <item>
+               <widget class="QPushButton" name="btn_refresh">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>35</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">QPushButton {
+	color: white;
+	background-color:#6441a5;
+	border: 0px solid;
+}
+QPushButton:hover {
+	color: #6441a5;
+	background-color: white;
+}</string>
+                </property>
+                <property name="text">
+                 <string>새로고침</string>
+                </property>
+               </widget>
+              </item>
+              <item>
                <widget class="QPushButton" name="btn_background">
                 <property name="minimumSize">
                  <size>

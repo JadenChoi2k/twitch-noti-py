@@ -19,7 +19,7 @@ class Model:
         if callable(self.notify_cbk):
             for stm in stream_list:
                 bro = self.find_broadcaster_by_id(stm.broadcaster_id)
-                self.notify_cbk(stm, bro)
+                self.notify_cbk(bro, stm)
 
     def register_refresh(self, cbk):
         self.refresh_cbk = cbk
