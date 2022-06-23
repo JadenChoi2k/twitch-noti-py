@@ -36,15 +36,33 @@ class OptionWidget(QWidget):
         layout.addWidget(self.selection, 5)
         self.setLayout(layout)
 
-    def get_value(self) -> int:
+    def get_name(self) -> str:
+        return self.name
+
+    def get_current_value(self) -> int:
         return self.selection.currentIndex()
 
-    def register_cbk(self, cbk):
+    def change_value(self, val):
+        self.selection.setCurrentIndex(val)
+
+    def save_value(self) -> int:
+        self.value = self.get_current_value()
+        return self.value
+
+    def cancel_option(self):
+        self.selection.setCurrentIndex(self.value)
+
+    # change_cbk(is_changed: bool)
+    def register_change_cbk(self, cbk):
         self.cbk = cbk
 
     def _on_value_changed(self):
-        if callable(self.cbk):
-            self.cbk(self.get_value())
+        if not callable(self.cbk):
+            return
+        if self.value == self.get_current_value():
+            self.cbk(False)
+        else:
+            self.cbk(True)
 
 
 if __name__ == '__main__':
