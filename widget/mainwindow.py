@@ -96,7 +96,7 @@ class MainWindow(QMainWindow, title_ui):
         loading_t.start()
 
     def _on_load_end(self):
-        controller.refresh()
+        self._on_refresh_button_click()
         self.to_main_page()
 
     def _on_refresh_button_click(self):
