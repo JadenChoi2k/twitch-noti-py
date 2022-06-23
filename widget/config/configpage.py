@@ -26,7 +26,6 @@ class ConfigurationPage(VerticalView):
         self.section_widget_list = []
         self.change_count = 0
         self.save_btn = QPushButton('저장')
-        self.save_btn.clicked.connect(lambda: print('저장'))
         self.cancel_btn = QPushButton('취소')
         self.default_btn = QPushButton('기본값')
         self.setup()

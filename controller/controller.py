@@ -49,6 +49,7 @@ class Controller:
         old_streaming, new_streaming = self._get_changes(prev_streaming, next_streaming)
         # if streaming changed
         if old_streaming or new_streaming:
+            print(f'streaming changed: old={[str(o) for o in old_streaming]} new={[str(o) for o in new_streaming]}')
             # if empty, nothing happens
             model.on_notify(new_streaming.values())
             model.refresh(model.broadcaster_list, next_streaming)
@@ -98,5 +99,6 @@ class MonitoringThread(QThread):
         from config.app.appconfig import AppConfiguration
         config = AppConfiguration()
         while True:
+            print('refresh-interval', config.get('system', 'refresh-interval'))
             self.stopped.wait(config.get('system', 'refresh-interval'))
             self.monitoring_signal.emit()

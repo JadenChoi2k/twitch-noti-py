@@ -81,7 +81,7 @@ class MainWindow(QMainWindow, title_ui):
         self.streaming_scroll.setWidget(self.streaming_list)
         self.config_scroll.setWidget(self.config_page)
         # setup callback functions
-        model.register_refresh(self._on_refresh)
+        model.register_refresh(self._on_refresh_button_click)
         model.register_notify(notification_manager.notify)
 
     def to_title_page(self):
