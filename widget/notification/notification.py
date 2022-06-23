@@ -48,7 +48,7 @@ class Notification(QWidget):
     def set_size(self, size):
         if size == 'small':
             self.set_small()
-        elif size == 'large':
+        elif size == 'medium':
             self.set_medium()
         else:
             self.set_large()
@@ -58,21 +58,103 @@ class Notification(QWidget):
         layout.setSpacing(0)
         layout.setAlignment(Qt.AlignmentFlag.AlignRight)
         close_widget = QWidget()
-        close_btn = QLabel()
-        profile_widget = QLabel('profile here')
+        close_btn = self._create_close_button()
+        profile_widget = self._create_profile_widget()
         # close button
         top_layout = QHBoxLayout()
         top_layout.setAlignment(Qt.AlignmentFlag.AlignRight)
         top_layout.setContentsMargins(0, 0, 0, 0)
-        close_btn.setFixedSize(25, 25)
-        close_btn.setScaledContents(True)
-        pixmap = QtGui.QPixmap()
-        pixmap.load('resources/x_icon_circle2.png')
-        close_btn.setPixmap(pixmap)
-        clickable(close_btn).connect(self.move_out)
         top_layout.addWidget(close_btn)
         close_widget.setLayout(top_layout)
-        # profile
+        # assemble
+        layout.addWidget(close_widget)
+        layout.addWidget(profile_widget)
+        self.setLayout(layout)
+
+    def set_medium(self):
+        _layout = QVBoxLayout()
+        _layout.setContentsMargins(0, 0, 0, 0)
+        _layout.setSpacing(0)
+        _widget = QWidget()
+        effect = QGraphicsOpacityEffect()
+        effect.setOpacity(0.8)
+        _widget.setGraphicsEffect(effect)
+        layout = QHBoxLayout()
+        layout.setContentsMargins(6, 10, 10, 10)
+        self.setStyleSheet('background: #fafafa; border-radius: 10px;')
+        profile_widget = self._create_profile_widget()
+        title_label = QLabel(f'[{self.broadcaster.name}] {self.streaming.title}')
+        playing_game_label = QLabel(f'{self.streaming.game_name} 플레이 중')
+        close_btn = self._create_close_button()
+        # description_label
+        description_widget = QWidget()
+        description_layout = QVBoxLayout()
+        title_label.setWordWrap(True)
+        title_label.setMaximumWidth(240)
+        title_label.setFont(QtGui.QFont('맑은 고딕', 12))
+        playing_game_label.setMaximumWidth(240)
+        playing_game_label.setFont(QtGui.QFont('맑은 고딕', 12))
+        description_layout.addWidget(title_label)
+        description_layout.addStretch(1)
+        description_layout.addWidget(playing_game_label)
+        description_widget.setLayout(description_layout)
+        clickable(description_widget).connect(self.onclick)
+        # close_btn
+        close_layout = QVBoxLayout()
+        close_layout.setContentsMargins(0, 0, 0, 0)
+        close_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        close_layout.addWidget(close_btn)
+        # assemble
+        layout.addWidget(profile_widget)
+        layout.addWidget(description_widget)
+        layout.addLayout(close_layout)
+        _widget.setLayout(layout)
+        _layout.addWidget(_widget)
+        self.setLayout(_layout)
+
+    def set_large(self):
+        _layout = QVBoxLayout()
+        _layout.setContentsMargins(0, 0, 0, 0)
+        _layout.setSpacing(0)
+        _widget = QWidget()
+        effect = QGraphicsOpacityEffect()
+        effect.setOpacity(0.8)
+        _widget.setGraphicsEffect(effect)
+        layout = QHBoxLayout()
+        layout.setContentsMargins(8, 8, 5, 8)
+        self.setStyleSheet('background: #fafafa; border-radius: 10px;')
+        profile_widget = self._create_thumbnail_widget()
+        title_label = QLabel(f'[{self.broadcaster.name}] {self.streaming.title}')
+        playing_game_label = QLabel(f'{self.streaming.game_name} 플레이 중')
+        close_btn = self._create_close_button()
+        # description_label
+        description_widget = QWidget()
+        description_layout = QVBoxLayout()
+        title_label.setWordWrap(True)
+        title_label.setMaximumWidth(240)
+        title_label.setFont(QtGui.QFont('맑은 고딕', 12))
+        playing_game_label.setMaximumWidth(240)
+        playing_game_label.setFont(QtGui.QFont('맑은 고딕', 12))
+        description_layout.addWidget(title_label)
+        description_layout.addStretch(1)
+        description_layout.addWidget(playing_game_label)
+        description_widget.setLayout(description_layout)
+        clickable(description_widget).connect(self.onclick)
+        # close_btn
+        close_layout = QVBoxLayout()
+        close_layout.setContentsMargins(0, 0, 0, 0)
+        close_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        close_layout.addWidget(close_btn)
+        # assemble
+        layout.addWidget(profile_widget)
+        layout.addWidget(description_widget)
+        layout.addLayout(close_layout)
+        _widget.setLayout(layout)
+        _layout.addWidget(_widget)
+        self.setLayout(_layout)
+
+    def _create_profile_widget(self):
+        profile_widget = QLabel('profile here')
         profile_widget.setFixedSize(100, 100)
         profile_widget.setScaledContents(True)
         with urllib.request.urlopen(self.broadcaster.profile_url) as data:
@@ -90,23 +172,38 @@ class Notification(QWidget):
                     painter.drawRoundedRect(rounded.rect(), rounded.width() // 2, rounded.height() // 2)
                 profile_widget.setPixmap(rounded)
         clickable(profile_widget).connect(self.onclick)
-        # assemble
-        layout.addWidget(close_widget)
-        layout.addWidget(profile_widget)
-        self.setLayout(layout)
+        return profile_widget
 
-    def set_medium(self):
-        layout = QHBoxLayout()
-        # profile
-        # name label
+    def _create_close_button(self):
+        close_btn = QLabel()
+        close_btn.setFixedSize(25, 25)
+        close_btn.setScaledContents(True)
+        pixmap = QtGui.QPixmap()
+        pixmap.load('resources/x_icon_circle2.png')
+        close_btn.setPixmap(pixmap)
+        clickable(close_btn).connect(self.move_out)
+        return close_btn
 
-    def set_large(self):
-        layout = QHBoxLayout()
-        # close button
-        # thumbnail
-        # title label
-        # game label
-        # time label
+    def _create_thumbnail_widget(self):
+        profile_widget = QLabel('profile here')
+        profile_widget.setFixedSize(200, 120)
+        profile_widget.setScaledContents(True)
+        with urllib.request.urlopen(self.streaming.get_image_url(400, 240)) as data:
+            if data.status == 200:
+                pixmap = QtGui.QPixmap()
+                pixmap.loadFromData(data.read())
+                # empty pixmap
+                rounded = QtGui.QPixmap(pixmap.size())
+                rounded.fill(QtGui.QColor("transparent"))
+                # paint rounded pixmap
+                with QtGui.QPainter(rounded) as painter:
+                    painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing)
+                    painter.setBrush(QtGui.QBrush(pixmap))
+                    painter.setPen(QtCore.Qt.PenStyle.NoPen)
+                    painter.drawRoundedRect(rounded.rect(), 8, 8)
+                profile_widget.setPixmap(rounded)
+        clickable(profile_widget).connect(self.onclick)
+        return profile_widget
 
     def move_to(self, dx, dy):
         self.move(self.x() + dx, self.y() + dy)
@@ -147,6 +244,6 @@ def example(size):
 if __name__ == '__main__':
     import sys
     app = QApplication(sys.argv)
-    w = example('small')
-    w.move_in(2430, 1250)
+    w = example('medium')
+    w.move_in(2050, 1250)
     sys.exit(app.exec())

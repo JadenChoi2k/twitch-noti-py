@@ -2,7 +2,7 @@ from widget.notification.notification import Notification
 from config.app.appconfig import AppConfiguration
 
 config = AppConfiguration()
-content_space = {'small': (150, 130), 'medium': (300, 250), 'large': (400, 300)}
+content_space = {'small': (140, 140), 'medium': (430, 130), 'large': (520, 150)}
 # get display screen scale
 SCREEN_SCALE = None
 from ctypes import windll
@@ -42,7 +42,7 @@ class NotificationManager:
         widget.set_index(len(self.widgets))
         cx, cy = content_space[size]
         sx, sy = _get_screen_size()
-        widget.move_in(sx - cx, sy - cy * (widget.index + 1) - 50)
+        widget.move_in(sx - cx, sy - cy * (widget.index + 1) - 25)
         self.widgets.append(widget)
 
     def onclose(self, idx):
