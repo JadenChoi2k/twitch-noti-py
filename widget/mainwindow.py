@@ -9,10 +9,15 @@ from model.model import Model
 from widget.listview.followlist import FollowList
 from widget.listview.streamlist import StreamList
 from widget.config.configpage import ConfigurationPage
+from widget.notification.manager import NotificationManager
 
 controller = Controller()
+notification_manager = NotificationManager()
 model = Model()
 appconfig = AppConfiguration()
+# thread
+loading_t = None
+refresh_t = None
 title_ui = None
 if os.path.isfile('main.ui'):
     title_ui = uic.loadUiType('main.ui')[0]
@@ -77,27 +82,28 @@ class MainWindow(QMainWindow, title_ui):
         self.config_scroll.setWidget(self.config_page)
         # setup callback functions
         model.register_refresh(self._on_refresh)
-        model.register_notify(lambda x: print(x))
+        model.register_notify(notification_manager.notify)
 
     def to_title_page(self):
         self.stk_main.setCurrentIndex(0)
 
     def to_loading_page(self):
-        global controller
+        global controller, loading_t
         self.lbl_loading.setText('트위치 서버에 연결 중...')
         self.stk_main.setCurrentIndex(1)
-        t = ControllerLoading(self)
-        t.on_load_end.connect(self._on_load_end)
-        t.start()
+        loading_t = ControllerLoading(self)
+        loading_t.on_load_end.connect(self._on_load_end)
+        loading_t.start()
 
     def _on_load_end(self):
         controller.refresh()
         self.to_main_page()
 
     def _on_refresh_button_click(self):
-        t = RefreshTread(self)
-        t.on_load_end.connect(self._on_refresh)
-        t.start()
+        global refresh_t
+        refresh_t = RefreshTread(self)
+        refresh_t.on_load_end.connect(self._on_refresh)
+        refresh_t.start()
 
     def _on_refresh(self):
         # add broadcaster
@@ -115,6 +121,7 @@ class MainWindow(QMainWindow, title_ui):
 
     def to_main_page(self):
         # controller.refresh()
+        controller.monitor_start()
         self.stk_main.setCurrentIndex(2)
 
     def to_error_page(self, error_msg):

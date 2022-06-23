@@ -4,6 +4,7 @@ from PyQt6 import QtGui
 from PyQt6 import QtCore
 import urllib.request
 import webbrowser
+data_cache = {}
 
 
 class ProfileWidget(QWidget):
@@ -30,26 +31,31 @@ class ProfileWidget(QWidget):
         self.setLayout(vbox)
 
     def set_profile_from_url(self, url):
-        with urllib.request.urlopen(url) as data:
-            if data.status == 200:
-                pixmap = QtGui.QPixmap()
-                pixmap.loadFromData(data.read())
-                if not self.stream_on:
-                    img = QtGui.QPixmap.toImage(pixmap)
-                    grayscale = img.convertToFormat(QtGui.QImage.Format.Format_Grayscale8)
-                    pixmap = QtGui.QPixmap.fromImage(grayscale)
-                # empty pixmap
-                rounded = QtGui.QPixmap(pixmap.size())
-                rounded.fill(QtGui.QColor("transparent"))
-                # paint rounded pixmap
-                with QtGui.QPainter(rounded) as painter:
-                    painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing)
-                    painter.setBrush(QtGui.QBrush(pixmap))
-                    painter.setPen(QtCore.Qt.PenStyle.NoPen)
-                    painter.drawRoundedRect(rounded.rect(), rounded.width() // 2, rounded.height() // 2)
-                self.profile_img.setPixmap(rounded)
-            else:
-                print('error from fetching profile image')
+        global data_cache
+        data = None
+        if data_cache.get(url):
+            data = data_cache[url]
+        else:
+            with urllib.request.urlopen(url) as fetch_data:
+                if fetch_data.status == 200:
+                    data = fetch_data.read()
+                    data_cache[url] = data
+        pixmap = QtGui.QPixmap()
+        pixmap.loadFromData(data)
+        if not self.stream_on:
+            img = QtGui.QPixmap.toImage(pixmap)
+            grayscale = img.convertToFormat(QtGui.QImage.Format.Format_Grayscale8)
+            pixmap = QtGui.QPixmap.fromImage(grayscale)
+        # empty pixmap
+        rounded = QtGui.QPixmap(pixmap.size())
+        rounded.fill(QtGui.QColor("transparent"))
+        # paint rounded pixmap
+        with QtGui.QPainter(rounded) as painter:
+            painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing)
+            painter.setBrush(QtGui.QBrush(pixmap))
+            painter.setPen(QtCore.Qt.PenStyle.NoPen)
+            painter.drawRoundedRect(rounded.rect(), rounded.width() // 2, rounded.height() // 2)
+        self.profile_img.setPixmap(rounded)
 
     def mouseReleaseEvent(self, event: QtGui.QMouseEvent) -> None:
         if self.stream_on:

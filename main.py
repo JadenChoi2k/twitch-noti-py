@@ -1,6 +1,4 @@
 from widget import mainwindow
-import model
-import controller
 
 
 def configure():

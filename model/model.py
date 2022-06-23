@@ -12,6 +12,7 @@ class Model:
             cls._instance = object.__new__(cls, *args, **kwargs)
         return cls._instance
 
+    # cbk(broadcaster, streaming)
     def register_notify(self, cbk):
         self.notify_cbk = cbk
 

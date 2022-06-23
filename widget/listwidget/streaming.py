@@ -5,6 +5,7 @@ from PyQt6 import QtCore
 from PyQt6 import QtGui
 import urllib.request
 import webbrowser
+data_cache = {}  # url: data
 
 
 class StreamingWidget(QWidget):
@@ -15,6 +16,8 @@ class StreamingWidget(QWidget):
         self.setFixedHeight(120)
         self.thumbnail_image = self.fetch_thumbnail_image_url(streaming.get_image_url(400, 240))
         self.title = QLabel(f'[{broadcaster.name}] {streaming.title}')
+        self.title.setMaximumWidth(800)
+        self.title.setWordWrap(True)
         self.title.setFont(QtGui.QFont('맑은 고딕', 15))
         self.game_name = QLabel(streaming.game_name)
         self.game_name.setFont(QtGui.QFont('맑은 고딕', 15))
@@ -22,20 +25,27 @@ class StreamingWidget(QWidget):
         self.setup_layout()
 
     def fetch_thumbnail_image_url(self, url) -> QLabel:
+        global data_cache
         lbl = QLabel()
         lbl.setScaledContents(True)
         lbl.setFixedSize(200, 120)
-        with urllib.request.urlopen(url) as data:
-            pixmap = QtGui.QPixmap()
-            pixmap.loadFromData(data.read())
-            rounded = QtGui.QPixmap(pixmap.size())
-            rounded.fill(QtGui.QColor("transparent"))
-            with QtGui.QPainter(rounded) as painter:
-                painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing)
-                painter.setBrush(QtGui.QBrush(pixmap))
-                painter.setPen(QtCore.Qt.PenStyle.NoPen)
-                painter.drawRoundedRect(rounded.rect(), 15, 15)
-            lbl.setPixmap(rounded)
+        data = None
+        if data_cache.get(url):
+            data = data_cache[url]
+        else:
+            with urllib.request.urlopen(url) as fetch_data:
+                data = fetch_data.read()
+                data_cache[url] = data
+        pixmap = QtGui.QPixmap()
+        pixmap.loadFromData(data)
+        rounded = QtGui.QPixmap(pixmap.size())
+        rounded.fill(QtGui.QColor("transparent"))
+        with QtGui.QPainter(rounded) as painter:
+            painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing)
+            painter.setBrush(QtGui.QBrush(pixmap))
+            painter.setPen(QtCore.Qt.PenStyle.NoPen)
+            painter.drawRoundedRect(rounded.rect(), 15, 15)
+        lbl.setPixmap(rounded)
         return lbl
 
     def setup_layout(self):

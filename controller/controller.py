@@ -1,6 +1,9 @@
 from domain.apicaller import ApiCaller
 from model.model import Model
+from PyQt6.QtCore import QThread, pyqtSignal
 model = Model()
+refresh_thread = None
+monitoring_thread = None
 
 
 class Controller:
@@ -19,8 +22,13 @@ class Controller:
 
     # will be called by view layer, setup or refresh button
     def refresh(self):
-        self.refetch()
-        model.on_refresh()
+        # self.refetch()
+        # model.on_refresh()
+        global refresh_thread
+        refresh_thread = RefreshThread()
+        refresh_thread.fetching_signal.connect(self.refetch)
+        refresh_thread.model_refresh_signal.connect(model.on_refresh)
+        refresh_thread.start()
 
     # just fetch again
     def refetch(self):
@@ -28,9 +36,14 @@ class Controller:
         stream_list = self._fetch(self.apicaller.get_next_followed_stream)
         model.refresh(broadcaster_list, stream_list)
 
+    def monitor_start(self):
+        global monitoring_thread
+        monitoring_thread = MonitoringThread()
+        monitoring_thread.monitoring_signal.connect(self._monitor)
+        monitoring_thread.start()
 
     # monitor live-streaming and invoke model to notify if there exists new
-    def monitor(self):
+    def _monitor(self):
         prev_streaming: list = model.stream_list
         next_streaming = self._fetch(self.apicaller.get_next_followed_stream)
         old_streaming, new_streaming = self._get_changes(prev_streaming, next_streaming)
@@ -59,3 +72,31 @@ class Controller:
             part, is_end = fetch_func()
             result += part
         return result
+
+
+class RefreshThread(QThread):
+    fetching_signal = pyqtSignal()
+    model_refresh_signal = pyqtSignal()
+
+    def __init__(self, parent=None):
+        super(RefreshThread, self).__init__(parent)
+
+    def run(self) -> None:
+        self.fetching_signal.emit()
+        self.model_refresh_signal.emit()
+
+
+class MonitoringThread(QThread):
+    monitoring_signal = pyqtSignal()
+
+    def __init__(self, parent=None):
+        from threading import Event
+        super(MonitoringThread, self).__init__(parent)
+        self.stopped = Event()
+
+    def run(self) -> None:
+        from config.app.appconfig import AppConfiguration
+        config = AppConfiguration()
+        while True:
+            self.stopped.wait(config.get('system', 'refresh-interval'))
+            self.monitoring_signal.emit()
