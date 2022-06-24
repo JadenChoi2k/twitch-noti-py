@@ -7,6 +7,11 @@ import webbrowser
 data_cache = {}
 
 
+def get_profile_cache():
+    global data_cache
+    return data_cache
+
+
 class ProfileWidget(QWidget):
     def __init__(self, broad_caster: BroadCaster, stream_on: bool = True):
         super().__init__()

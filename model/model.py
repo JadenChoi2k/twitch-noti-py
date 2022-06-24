@@ -20,7 +20,11 @@ class Model:
         if callable(self.notify_cbk):
             for stm in stream_list:
                 bro = self.find_broadcaster_by_id(stm.broadcaster_id)
-                self.notify_cbk(bro, stm)
+                if bro:
+                    self.notify_cbk(bro, stm)
+                else:
+                    print('cannot find broadcaster: ', stm)
+                    raise RuntimeError('cannot find broadcaster')
 
     def register_refresh(self, cbk):
         self.refresh_cbk = cbk
@@ -35,7 +39,7 @@ class Model:
 
     def find_broadcaster_by_id(self, broadcaster_id):
         for b in self.broadcaster_list:
-            if b.id == broadcaster_id:
+            if str(b.id) == str(broadcaster_id):
                 return b
         return None
 

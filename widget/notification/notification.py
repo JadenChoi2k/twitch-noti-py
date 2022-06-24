@@ -5,6 +5,10 @@ from PyQt6 import QtGui
 from domain.broadcaster import BroadCaster
 from domain.stream import Streaming
 import urllib.request
+import os
+from widget.listwidget import profile
+from config.app.appconfig import AppConfiguration
+config = AppConfiguration()
 
 
 def clickable(widget):
@@ -32,6 +36,9 @@ class Notification(QWidget):
         self.index = None
         self.broadcaster, self.streaming, self.widget_size = broadcaster, streaming, size
         self.initUi()
+        t = ClosingThread(config.get('notification', 'move-out-time'), self)
+        t.closing.connect(self.move_out)
+        t.start()
 
     def initUi(self):
         self.setWindowFlags(
@@ -40,6 +47,7 @@ class Notification(QWidget):
             | Qt.WindowType.Tool)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setStyleSheet('background: transparent;')
+        self.resize(400, 100)
         self.set_size(self.widget_size)
 
     def set_index(self, index):
@@ -48,10 +56,14 @@ class Notification(QWidget):
     def set_size(self, size):
         if size == 'small':
             self.set_small()
+            # self.resize(150, 100)
+            self.setFixedSize(180, 140)
         elif size == 'medium':
             self.set_medium()
+            self.setFixedSize(400, 120)
         else:
             self.set_large()
+            self.setFixedSize(500, 135)
 
     def set_small(self):
         layout = QVBoxLayout()
@@ -77,7 +89,7 @@ class Notification(QWidget):
         _layout.setSpacing(0)
         _widget = QWidget()
         effect = QGraphicsOpacityEffect()
-        effect.setOpacity(0.8)
+        effect.setOpacity(0.9)
         _widget.setGraphicsEffect(effect)
         layout = QHBoxLayout()
         layout.setContentsMargins(6, 10, 10, 10)
@@ -89,6 +101,8 @@ class Notification(QWidget):
         # description_label
         description_widget = QWidget()
         description_layout = QVBoxLayout()
+        description_layout.setContentsMargins(0, 0, 0, 0)
+        description_layout.setSpacing(0)
         title_label.setWordWrap(True)
         title_label.setMaximumWidth(240)
         title_label.setFont(QtGui.QFont('맑은 고딕', 12))
@@ -118,7 +132,7 @@ class Notification(QWidget):
         _layout.setSpacing(0)
         _widget = QWidget()
         effect = QGraphicsOpacityEffect()
-        effect.setOpacity(0.8)
+        effect.setOpacity(0.9)
         _widget.setGraphicsEffect(effect)
         layout = QHBoxLayout()
         layout.setContentsMargins(8, 8, 5, 8)
@@ -154,23 +168,30 @@ class Notification(QWidget):
         self.setLayout(_layout)
 
     def _create_profile_widget(self):
+        cache = profile.get_profile_cache()
         profile_widget = QLabel('profile here')
         profile_widget.setFixedSize(100, 100)
         profile_widget.setScaledContents(True)
-        with urllib.request.urlopen(self.broadcaster.profile_url) as data:
-            if data.status == 200:
-                pixmap = QtGui.QPixmap()
-                pixmap.loadFromData(data.read())
-                # empty pixmap
-                rounded = QtGui.QPixmap(pixmap.size())
-                rounded.fill(QtGui.QColor("transparent"))
-                # paint rounded pixmap
-                with QtGui.QPainter(rounded) as painter:
-                    painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing)
-                    painter.setBrush(QtGui.QBrush(pixmap))
-                    painter.setPen(QtCore.Qt.PenStyle.NoPen)
-                    painter.drawRoundedRect(rounded.rect(), rounded.width() // 2, rounded.height() // 2)
-                profile_widget.setPixmap(rounded)
+        data = None
+        url = self.broadcaster.profile_url
+        if cache.get(url):
+            data = cache[url]
+        else:
+            with urllib.request.urlopen(url) as fetch_data:
+                if fetch_data.status == 200:
+                    data = fetch_data.read()
+        pixmap = QtGui.QPixmap()
+        pixmap.loadFromData(data)
+        # empty pixmap
+        rounded = QtGui.QPixmap(pixmap.size())
+        rounded.fill(QtGui.QColor("transparent"))
+        # paint rounded pixmap
+        with QtGui.QPainter(rounded) as painter:
+            painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing)
+            painter.setBrush(QtGui.QBrush(pixmap))
+            painter.setPen(QtCore.Qt.PenStyle.NoPen)
+            painter.drawRoundedRect(rounded.rect(), rounded.width() // 2, rounded.height() // 2)
+        profile_widget.setPixmap(rounded)
         clickable(profile_widget).connect(self.onclick)
         return profile_widget
 
@@ -179,7 +200,10 @@ class Notification(QWidget):
         close_btn.setFixedSize(25, 25)
         close_btn.setScaledContents(True)
         pixmap = QtGui.QPixmap()
-        pixmap.load('resources/x_icon_circle2.png')
+        if os.path.isdir('resources'):
+            pixmap.load('resources/x_icon_circle2.png')
+        else:
+            pixmap.load('widget/notification/resources/x_icon_circle2.png')
         close_btn.setPixmap(pixmap)
         clickable(close_btn).connect(self.move_out)
         return close_btn
@@ -205,6 +229,9 @@ class Notification(QWidget):
         clickable(profile_widget).connect(self.onclick)
         return profile_widget
 
+    def get_content_space(self) -> tuple:
+        return self.width() + 25, self.height() + 5
+
     def move_to(self, dx, dy):
         self.move(self.x() + dx, self.y() + dy)
 
@@ -221,14 +248,29 @@ class Notification(QWidget):
 
     def onclick(self):
         self.open_browser()
+        self.move_out()
 
     def open_browser(self):
         import webbrowser
         webbrowser.open(f'https://twitch.tv/{self.broadcaster.login_id}')
-        self.move_out()
 
     def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
         self.closed.emit(self.index)
+
+
+class ClosingThread(QtCore.QThread):
+    closing = QtCore.pyqtSignal()
+
+    def __init__(self, sec, parent=None):
+        super(ClosingThread, self).__init__(parent)
+        self.parent = parent
+        self.sec = sec
+
+    def run(self) -> None:
+        import time
+        if self.sec > 0:
+            time.sleep(self.sec)
+            self.closing.emit()
 
 
 def example(size):

@@ -9,4 +9,5 @@ class StreamList(VerticalView):
         super().__init__()
 
     def add_stream_item(self, s: Streaming, b: BroadCaster):
-        self.add(StreamingWidget(s, b))
+        if s and b:
+            self.add(StreamingWidget(s, b))

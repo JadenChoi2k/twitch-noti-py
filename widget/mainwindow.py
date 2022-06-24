@@ -18,6 +18,7 @@ appconfig = AppConfiguration()
 # thread
 loading_t = None
 refresh_t = None
+notify_t = None
 title_ui = None
 if os.path.isfile('main.ui'):
     title_ui = uic.loadUiType('main.ui')[0]
@@ -82,7 +83,8 @@ class MainWindow(QMainWindow, title_ui):
         self.config_scroll.setWidget(self.config_page)
         # setup callback functions
         model.register_refresh(self._on_refresh_button_click)
-        model.register_notify(notification_manager.notify)
+        model.register_notify(self._on_notify)
+        # model.register_notify(notification_manager.notify)
 
     def to_title_page(self):
         self.stk_main.setCurrentIndex(0)
@@ -119,6 +121,14 @@ class MainWindow(QMainWindow, title_ui):
         for s in model.stream_list:
             self.streaming_list.add_stream_item(s, model.find_broadcaster_by_id(s.broadcaster_id))
 
+    def _on_notify(self, bro, stm):
+        global notify_t
+        notify_t = NotificationThread()
+        notify_t.cbk.connect(notification_manager.notify)
+        notify_t.bro = bro
+        notify_t.stm = stm
+        notify_t.start()
+
     def to_main_page(self):
         # controller.refresh()
         controller.monitor_start()
@@ -151,6 +161,18 @@ class RefreshTread(QtCore.QThread):
         _controller = Controller()
         _controller.refetch()
         self.on_load_end.emit()
+
+
+class NotificationThread(QtCore.QThread):
+    cbk = QtCore.pyqtSignal(object, object)
+    bro = None
+    stm = None
+
+    def __init__(self, parent=None):
+        super(NotificationThread, self).__init__(parent)
+
+    def run(self) -> None:
+        self.cbk.emit(self.bro, self.stm)
 
 
 def execute():

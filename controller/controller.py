@@ -50,9 +50,15 @@ class Controller:
         # if streaming changed
         if old_streaming or new_streaming:
             print(f'streaming changed: old={[str(o) for o in old_streaming]} new={[str(o) for o in new_streaming]}')
+            # model.refresh(model.broadcaster_list, next_streaming)
+            self.refetch()
             # if empty, nothing happens
             model.on_notify(new_streaming.values())
-            model.refresh(model.broadcaster_list, next_streaming)
+            # from datetime import datetime, timezone, timedelta
+            # from domain.stream import Streaming
+            # model.on_notify([Streaming(49045679, '순대국 후로로루로루루로루로루로로록', 'Just Chatting',
+            #          'https://static-cdn.jtvnw.net/previews-ttv/live_user_woowakgood-{width}x{height}.jpg',
+            #          datetime(2022, 5, 21, 8, 56, 56).astimezone(timezone(timedelta(hours=9))))])
             model.on_refresh()
 
     def _get_changes(self, prev_streaming, next_streaming) -> tuple:

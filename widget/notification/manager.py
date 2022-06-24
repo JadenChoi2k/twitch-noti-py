@@ -40,13 +40,15 @@ class NotificationManager:
         widget = Notification(broadcaster, streamer, size)
         widget.closed.connect(self.onclose)
         widget.set_index(len(self.widgets))
-        cx, cy = content_space[size]
+        cx, cy = widget.get_content_space()
         sx, sy = _get_screen_size()
         widget.move_in(sx - cx, sy - cy * (widget.index + 1) - 25)
+        if config.get('notification', 'auto-open'):
+            widget.open_browser()
         self.widgets.append(widget)
 
     def onclose(self, idx):
-        cx, cy = content_space[self.widgets[idx].widget_size]
+        cx, cy = self.widgets[idx].get_content_space()
         for i in range(idx + 1, len(self.widgets)):
             self.widgets[i].move_to(0, cy)
             self.widgets[i].index = i - 1
