@@ -6,11 +6,11 @@ LANGUAGE_MAP = {
     # config-name
     'resolution': '해상도',
     'language': '언어',
-    'refresh-interval': '새로고침 빈도',
+    'refresh-interval': '새로고침 빈도 (분)',
     'run-on-boot': '부팅 시 자동실행',
     'size': '알림 크기',
     'animation': '알림 애니메이션',
-    'move-out-time': '알림 자동 꺼짐',
+    'move-out-time': '알림 자동 꺼짐 (초)',
     'auto-open': '알림 도착 시 방송 켜기',
     # config-value
     'English': '영어',

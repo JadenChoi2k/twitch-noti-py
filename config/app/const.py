@@ -21,11 +21,11 @@ VALUE_PARSER = {
 }
 APP_DEFAULT_SETTINGS = {
     'system': {'resolution': 2,
-               'language': 0,
+               'language': 1,
                'refresh-interval': 2,
                'run-on-boot': 1},
     'notification': {'size': 1,
-                     'animation': 1,
-                     'move-out-time': 2,
+                     'animation': 0,
+                     'move-out-time': 6,
                      'auto-open': 1}
 }

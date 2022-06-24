@@ -6,11 +6,11 @@ LANGUAGE_MAP = {
     # config-name
     'resolution': 'resolution',
     'language': 'language',
-    'refresh-interval': 'refresh interval',
+    'refresh-interval': 'refresh interval (min)',
     'run-on-boot': 'run on boot',
     'size': 'size',
     'animation': 'animation',
-    'move-out-time': 'move out time',
+    'move-out-time': 'move out time (sec)',
     'auto-open': 'auto open on notify',
     # config-value
     'English': 'English',
