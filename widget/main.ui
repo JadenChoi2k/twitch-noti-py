@@ -392,13 +392,13 @@
             <widget class="QFrame" name="left_nav">
              <property name="minimumSize">
               <size>
-               <width>150</width>
+               <width>180</width>
                <height>0</height>
               </size>
              </property>
              <property name="maximumSize">
               <size>
-               <width>150</width>
+               <width>180</width>
                <height>16777215</height>
               </size>
              </property>
@@ -430,7 +430,7 @@
               <property name="bottomMargin">
                <number>0</number>
               </property>
-              <item>
+              <item alignment="Qt::AlignHCenter">
                <widget class="QLabel" name="lbl_nav_logo">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -454,6 +454,12 @@
               </item>
               <item>
                <widget class="QPushButton" name="btn_followed">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
@@ -518,6 +524,12 @@ QPushButton:hover {
               </item>
               <item>
                <widget class="QPushButton" name="btn_option">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
@@ -560,6 +572,12 @@ QPushButton:hover {
               </item>
               <item>
                <widget class="QPushButton" name="btn_refresh">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
@@ -668,8 +686,8 @@ border: none;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>836</width>
+                       <height>570</height>
                       </rect>
                      </property>
                     </widget>
@@ -705,8 +723,8 @@ border: none;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>98</width>
-                       <height>28</height>
+                       <width>100</width>
+                       <height>30</height>
                       </rect>
                      </property>
                     </widget>
@@ -730,8 +748,8 @@ border: none;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>854</width>
-                       <height>558</height>
+                       <width>88</width>
+                       <height>18</height>
                       </rect>
                      </property>
                     </widget>

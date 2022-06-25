@@ -2,6 +2,7 @@ import sys
 import os
 from PyQt6.QtWidgets import *
 from PyQt6 import QtCore
+from PyQt6 import QtGui
 from PyQt6 import uic
 from config.app.appconfig import AppConfiguration
 from controller.controller import Controller
@@ -40,6 +41,7 @@ class MainWindow(QMainWindow, title_ui):
     lbl_loading: QLabel = None
     # page 2 widgets
     # left navigation sidebar
+    left_nav: QFrame = None
     lbl_nav_logo: QLabel = None
     btn_followed: QPushButton = None
     btn_streaming: QPushButton = None
@@ -66,6 +68,8 @@ class MainWindow(QMainWindow, title_ui):
     def setup(self):
         # setup window
         self.resize(*appconfig.get('system', 'resolution'))
+        # init icons
+        self._init_icons()
         # init widgets
         self.followed_list = FollowList()
         self.streaming_list = StreamList()
@@ -85,6 +89,24 @@ class MainWindow(QMainWindow, title_ui):
         model.register_refresh(self._on_refresh_button_click)
         model.register_notify(self._on_notify)
         # model.register_notify(notification_manager.notify)
+
+    def _init_icons(self):
+        self.setWindowIcon(QtGui.QIcon('./widget/resources/twitch_notipy_window_icon.ico'))
+        # init title logo
+        self.lbl_title_logo.setScaledContents(True)
+        self.lbl_title_logo.setFixedSize(240, 300)
+        pixmap = QtGui.QPixmap()
+        pixmap.load('./widget/resources/twitch_notipy_logo.png')
+        self.lbl_title_logo.setPixmap(pixmap)
+        # init main app navigation logo
+        # print(self.left_nav.layout().setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter))
+        print(self.left_nav)
+        print(self.left_nav.layout())
+        self.lbl_nav_logo.setScaledContents(True)
+        self.lbl_nav_logo.setFixedSize(145, 175)
+        pixmap = QtGui.QPixmap()
+        pixmap.load('./widget/resources/twitch_notipy_logo_white.png')
+        self.lbl_nav_logo.setPixmap(pixmap)
 
     def to_title_page(self):
         self.stk_main.setCurrentIndex(0)
