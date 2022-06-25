@@ -3,8 +3,12 @@ from config.app.const import CONFIG_FILE_NAME, APP_CONFIG_CONSTANTS, APP_DEFAULT
 import os
 
 
+def configdir():
+    return os.curdir
+
+
 def get_config_path():
-    return os.path.join(os.path.dirname(__file__), CONFIG_FILE_NAME)
+    return os.path.join(configdir(), CONFIG_FILE_NAME)
 
 
 class AppConfiguration:
@@ -48,8 +52,8 @@ class AppConfiguration:
         self.save()
 
     def save(self):
-        if not os.path.isdir(os.path.dirname(__file__)):
-            os.makedirs(os.path.dirname(__file__))
+        if not os.path.isdir(configdir()):
+            os.makedirs(configdir())
         with open(get_config_path(), 'w') as f:
             self._cp.write(f)
 

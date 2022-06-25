@@ -1,4 +1,4 @@
-CONFIG_FILE_NAME = 'app.ini'
+CONFIG_FILE_NAME = 'twpy.ini'
 APP_CONFIG_CONSTANTS = {
     'system': {'resolution': ['480 X 320', '760 X 480', '1024 X 576', '1280 X 720', '1600 X 900', '1920 X 1080'],
                'language': ['English', 'Korean'],
