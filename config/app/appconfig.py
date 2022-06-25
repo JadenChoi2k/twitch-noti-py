@@ -1,5 +1,10 @@
 import configparser
 from config.app.const import CONFIG_FILE_NAME, APP_CONFIG_CONSTANTS, APP_DEFAULT_SETTINGS, VALUE_PARSER
+import os
+
+
+def get_config_path():
+    return os.path.join(os.path.dirname(__file__), CONFIG_FILE_NAME)
 
 
 class AppConfiguration:
@@ -14,7 +19,7 @@ class AppConfiguration:
     def __init__(self):
         self._cp = configparser.ConfigParser()
         # if not file exist
-        if not self._cp.read(CONFIG_FILE_NAME):
+        if not self._cp.read(get_config_path()):
             self.set_default_and_save()
         # if invalid config value
         if not self.validate_config():
@@ -43,7 +48,7 @@ class AppConfiguration:
         self.save()
 
     def save(self):
-        with open(CONFIG_FILE_NAME, 'w') as f:
+        with open(get_config_path(), 'w') as f:
             self._cp.write(f)
 
     def update(self, update_dict: dict):

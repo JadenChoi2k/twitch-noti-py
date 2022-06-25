@@ -20,13 +20,13 @@ appconfig = AppConfiguration()
 loading_t = None
 refresh_t = None
 notify_t = None
-title_ui = None
-if os.path.isfile('main.ui'):
-    title_ui = uic.loadUiType('main.ui')[0]
-else:
-    title_ui = uic.loadUiType('widget/main.ui')[0]
-while not title_ui:
-    continue
+
+
+def get_path_from_current(*args):
+    return os.path.join(os.path.dirname(__file__), *args)
+
+
+title_ui = uic.loadUiType(get_path_from_current('main.ui'))[0]
 
 
 class MainWindow(QMainWindow, title_ui):
@@ -91,12 +91,12 @@ class MainWindow(QMainWindow, title_ui):
         # model.register_notify(notification_manager.notify)
 
     def _init_icons(self):
-        self.setWindowIcon(QtGui.QIcon('./widget/resources/twitch_notipy_window_icon.ico'))
+        self.setWindowIcon(QtGui.QIcon(get_path_from_current('resources', 'twitch_notipy_window_icon.ico')))
         # init title logo
         self.lbl_title_logo.setScaledContents(True)
         self.lbl_title_logo.setFixedSize(240, 300)
         pixmap = QtGui.QPixmap()
-        pixmap.load('./widget/resources/twitch_notipy_logo.png')
+        pixmap.load(get_path_from_current('resources', 'twitch_notipy_logo.png'))
         self.lbl_title_logo.setPixmap(pixmap)
         # init main app navigation logo
         # print(self.left_nav.layout().setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter))
@@ -105,7 +105,7 @@ class MainWindow(QMainWindow, title_ui):
         self.lbl_nav_logo.setScaledContents(True)
         self.lbl_nav_logo.setFixedSize(145, 175)
         pixmap = QtGui.QPixmap()
-        pixmap.load('./widget/resources/twitch_notipy_logo_white.png')
+        pixmap.load(get_path_from_current('resources', 'twitch_notipy_logo_white.png'))
         self.lbl_nav_logo.setPixmap(pixmap)
 
     def to_title_page(self):
