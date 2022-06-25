@@ -99,9 +99,6 @@ class MainWindow(QMainWindow, title_ui):
         pixmap.load(get_path_from_current('resources', 'twitch_notipy_logo.png'))
         self.lbl_title_logo.setPixmap(pixmap)
         # init main app navigation logo
-        # print(self.left_nav.layout().setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter))
-        print(self.left_nav)
-        print(self.left_nav.layout())
         self.lbl_nav_logo.setScaledContents(True)
         self.lbl_nav_logo.setFixedSize(145, 175)
         pixmap = QtGui.QPixmap()
