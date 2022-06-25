@@ -105,6 +105,5 @@ class MonitoringThread(QThread):
         from config.app.appconfig import AppConfiguration
         config = AppConfiguration()
         while True:
-            print('refresh-interval', config.get('system', 'refresh-interval'))
-            self.stopped.wait(config.get('system', 'refresh-interval'))
+            self.stopped.wait(config.get('system', 'refresh-interval') * 60)
             self.monitoring_signal.emit()
