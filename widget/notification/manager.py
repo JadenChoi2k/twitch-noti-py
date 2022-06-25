@@ -50,7 +50,7 @@ class NotificationManager:
     def onclose(self, idx):
         cx, cy = self.widgets[idx].get_content_space()
         for i in range(idx + 1, len(self.widgets)):
-            self.widgets[i].move_to(0, cy)
+            self.widgets[i].move_to(0, cy, sec=0.2)
             self.widgets[i].index = i - 1
         del self.widgets[idx]
 

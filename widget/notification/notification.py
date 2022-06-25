@@ -232,19 +232,54 @@ class Notification(QWidget):
     def get_content_space(self) -> tuple:
         return self.width() + 25, self.height() + 5
 
-    def move_to(self, dx, dy):
-        self.move(self.x() + dx, self.y() + dy)
+    def move_to(self, dx, dy, sec=1):
+        animation = config.get('notification', 'animation')
+        sx, sy = self.x(), self.y()
+        ex, ey = sx + dx, sy + dy
+        if animation == 'OFF':
+            self.move(self.x() + dx, self.y() + dy)
+            return
+        self.anim_mv = QtCore.QPropertyAnimation(self, b"pos")
+        self.anim_mv.setEasingCurve(self._get_animation_curve(animation))
+        self.anim_mv.setDuration(int(sec * 1000))
+        self.anim_mv.setStartValue(QtCore.QPoint(self.x(), self.y()))
+        self.anim_mv.setEndValue(QtCore.QPoint(ex, ey))
+        self.anim_mv.start()
 
     # show
     # called by manager
     def move_in(self, x, y):
-        self.move(x, y)
+        sec = 0.5
+        sx, sy = x + self.width() + 50, y
+        animation = config.get('notification', 'animation')
+        if animation == 'OFF':
+            self.move(x, y)
+            self.show()
+            return
+        self.move(sx, sy)
+        self.move_to(-(self.width() + 50), 0, sec)
         self.show()
 
     # hide (close)
     # called by self
     def move_out(self):
-        self.close()
+        sec = 0.25
+        animation = config.get('notification', 'animation')
+        if animation == 'OFF':
+            self.close()
+            return
+        self.move_to(self.width() + 50, 0, sec)
+        self.move_out_close_t = ClosingThread(sec + 0.1, self)
+        self.move_out_close_t.closing.connect(self.close)
+        self.move_out_close_t.start()
+
+    def _get_animation_curve(self, animation):
+        if animation == 'ENERGETIC':
+            return QtCore.QEasingCurve.Type.InOutExpo
+        elif animation == 'BOUND':
+            return QtCore.QEasingCurve.Type.InOutBack
+        elif animation == 'SMOOTH':
+            return QtCore.QEasingCurve.Type.InOutSine
 
     def onclick(self):
         self.open_browser()
@@ -287,5 +322,5 @@ if __name__ == '__main__':
     import sys
     app = QApplication(sys.argv)
     w = example('medium')
-    w.move_in(2050, 1250)
+    w.move_in(2150, 1250)
     sys.exit(app.exec())

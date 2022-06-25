@@ -5,7 +5,7 @@ APP_CONFIG_CONSTANTS = {
                'refresh-interval': ['1', '3', '5', '10', '20', '30', '60'],
                'run-on-boot': ['ON', 'OFF']},
     'notification': {'size': ['small', 'medium', 'large'],
-                     'animation': ['OFF', 'FADE', 'BOUND', 'SMOOTH'],
+                     'animation': ['OFF', 'ENERGETIC', 'BOUND', 'SMOOTH'],
                      'move-out-time': ['1', '5', '10', '30', '60', '180', 'OFF'],
                      'auto-open': ['ON', 'OFF']}
 }
@@ -25,7 +25,7 @@ APP_DEFAULT_SETTINGS = {
                'refresh-interval': 2,
                'run-on-boot': 1},
     'notification': {'size': 1,
-                     'animation': 0,
+                     'animation': 1,
                      'move-out-time': 6,
                      'auto-open': 1}
 }

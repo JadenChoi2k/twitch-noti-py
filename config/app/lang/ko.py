@@ -21,6 +21,7 @@ LANGUAGE_MAP = {
     'medium': '적당하게',
     'large': '크게',
     'FADE': '페이드',
+    'ENERGETIC': '역동적인',
     'BOUND': '튀어오름',
     'SMOOTH': '부드럽게',
 }

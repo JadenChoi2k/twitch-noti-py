@@ -21,6 +21,7 @@ LANGUAGE_MAP = {
     'medium': 'medium',
     'large': 'large',
     'FADE': 'fade',
+    'ENERGETIC': 'energetic',
     'BOUND': 'bound',
     'SMOOTH': 'smooth',
 }
