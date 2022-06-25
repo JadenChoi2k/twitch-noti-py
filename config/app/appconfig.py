@@ -48,6 +48,8 @@ class AppConfiguration:
         self.save()
 
     def save(self):
+        if not os.path.isdir(os.path.dirname(__file__)):
+            os.makedirs(os.path.dirname(__file__))
         with open(get_config_path(), 'w') as f:
             self._cp.write(f)
 
