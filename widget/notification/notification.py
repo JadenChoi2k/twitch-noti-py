@@ -8,7 +8,12 @@ import urllib.request
 import os
 from widget.listwidget import profile
 from config.app.appconfig import AppConfiguration
+
 config = AppConfiguration()
+
+
+def get_path_from_current(*args):
+    return os.path.join(os.path.dirname(__file__), *args)
 
 
 def clickable(widget):
@@ -200,10 +205,7 @@ class Notification(QWidget):
         close_btn.setFixedSize(25, 25)
         close_btn.setScaledContents(True)
         pixmap = QtGui.QPixmap()
-        if os.path.isdir('resources'):
-            pixmap.load('resources/x_icon_circle2.png')
-        else:
-            pixmap.load('widget/notification/resources/x_icon_circle2.png')
+        pixmap.load(get_path_from_current('resources', 'x_icon_circle2.png'))
         close_btn.setPixmap(pixmap)
         clickable(close_btn).connect(self.move_out)
         return close_btn
@@ -320,6 +322,7 @@ def example(size):
 
 if __name__ == '__main__':
     import sys
+
     app = QApplication(sys.argv)
     w = example('medium')
     w.move_in(2150, 1250)
