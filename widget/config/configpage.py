@@ -3,12 +3,14 @@ from widget.listview.verticalview import VerticalView
 from widget.config.section import ConfigSectionWidget
 from config.app.const import APP_DEFAULT_SETTINGS
 from PyQt6.QtWidgets import *
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6 import QtGui
 config = AppConfiguration()
 
 
 class ConfigurationPage(VerticalView):
+    changed = pyqtSignal()
+
     def __init__(self):
         super().__init__()
         self.setStyleSheet('''
@@ -72,6 +74,7 @@ class ConfigurationPage(VerticalView):
         self.change_count = 0
         self.save_btn.setEnabled(False)
         self.cancel_btn.setEnabled(False)
+        self.changed.emit()
 
     def on_cancel_click(self):
         for sec in self.section_widget_list:

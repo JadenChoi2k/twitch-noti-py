@@ -11,6 +11,7 @@ from widget.listview.followlist import FollowList
 from widget.listview.streamlist import StreamList
 from widget.config.configpage import ConfigurationPage
 from widget.notification.manager import NotificationManager
+from utils import onboot
 
 controller = Controller()
 notification_manager = NotificationManager()
@@ -88,6 +89,7 @@ class MainWindow(QMainWindow, title_ui):
         # setup callback functions
         model.register_refresh(self._on_refresh_button_click)
         model.register_notify(self._on_notify)
+        self.config_page.changed.connect(self._on_config_change)
         # model.register_notify(notification_manager.notify)
 
     def _init_icons(self):
@@ -147,6 +149,13 @@ class MainWindow(QMainWindow, title_ui):
         notify_t.bro = bro
         notify_t.stm = stm
         notify_t.start()
+
+    def _on_config_change(self):
+        self.resize(*appconfig.get('system', 'resolution'))
+        if appconfig.get('system', 'run-on-boot'):
+            onboot.create_lnk(__file__)
+        else:
+            onboot.delete_lnk()
 
     def to_main_page(self):
         # controller.refresh()
