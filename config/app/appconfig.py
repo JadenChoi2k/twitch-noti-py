@@ -1,9 +1,12 @@
 import configparser
 from config.app.const import CONFIG_FILE_NAME, APP_CONFIG_CONSTANTS, APP_DEFAULT_SETTINGS, VALUE_PARSER
+import sys
 import os
 
 
 def configdir():
+    if getattr(sys, 'frozen', False):  # --one-file
+        return os.path.dirname(sys.executable)
     return os.curdir
 
 
