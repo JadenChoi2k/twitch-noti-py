@@ -5,7 +5,8 @@ from PyQt6 import QtCore
 from PyQt6 import QtGui
 import urllib.request
 import webbrowser
-data_cache = {}  # url: data
+import datetime
+data_cache = {}  # url: (data, datetime)
 
 
 class StreamingWidget(QWidget):
@@ -31,11 +32,13 @@ class StreamingWidget(QWidget):
         lbl.setFixedSize(200, 120)
         data = None
         if data_cache.get(url):
-            data = data_cache[url]
-        else:
+            cached_data, _datetime = data_cache[url]
+            if (datetime.datetime.now() - _datetime).seconds < 5 * 60:  # if cached time less than 5 minutes
+                data = cached_data
+        if data is None:
             with urllib.request.urlopen(url) as fetch_data:
                 data = fetch_data.read()
-                data_cache[url] = data
+                data_cache[url] = (data, datetime.datetime.now())
         pixmap = QtGui.QPixmap()
         pixmap.loadFromData(data)
         rounded = QtGui.QPixmap(pixmap.size())
